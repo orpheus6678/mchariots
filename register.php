@@ -1,6 +1,6 @@
 <?php
 
-require 'util.php';
+require 'assets/util.php';
 
 session_start();
 
@@ -10,7 +10,7 @@ if (isset($_SESSION['username'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  require 'db.php';
+  require 'assets/db.php';
 
   $fullname = $_POST['fullname'] ?? '';
   $email = $_POST['email'] ?? '';
@@ -69,12 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     refresh_with_cookie('invalid');
 
   $hash = password_hash($password, PASSWORD_DEFAULT);
+  $joindate = date('Y-m-d');
 
   try {
     mysqli_execute_query(
       $mysqli,
-      "INSERT INTO `users` VALUES (?, ?, ?, ?, ?, ?)",
-      [$username, $hash, $email, $fullname, $dob, $gender]
+      'INSERT INTO `users` VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [$username, $hash, $email, $fullname, $dob, $gender, $joindate, null]
     );
 
     refresh_with_cookie('regsuccess', location: 'login.php');

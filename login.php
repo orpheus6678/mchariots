@@ -1,7 +1,6 @@
 <?php
 
-require 'util.php';
-require 'db.php';
+require 'assets/util.php';
 
 session_start();
 
@@ -11,8 +10,8 @@ if (isset($_SESSION['username'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  require 'db.php';
-
+  require 'assets/db.php';
+  
   $username = $_POST['username'];
   $password = $_POST['password'];
 

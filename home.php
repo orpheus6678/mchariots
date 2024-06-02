@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href=global.css>
     <title>Home | MChariots</title>
   </head>
   <body>
@@ -11,7 +11,7 @@
     <script>
       document
         .querySelector('button')
-        .addEventListener('click', () => window.location = 'logout.php');
+        .addEventListener('click', () => window.location = 'assets/logout.php');
     </script>
   </body>
 </html>
