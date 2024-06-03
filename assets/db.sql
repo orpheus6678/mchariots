@@ -24,7 +24,7 @@ CREATE TABLE `posts` (
   `text`     TEXT,
   `created`  DATETIME NOT NULL,
   `username` VARCHAR (64) NOT NULL,
-  `car`      BIGINT,
+  `car`      VARCHAR (32),
 
   FOREIGN KEY (`username`) REFERENCES `users` (`username`)
 );
@@ -36,3 +36,44 @@ CREATE TABLE `posts_images` (
   FOREIGN KEY (`postid`) REFERENCES `posts` (`id`),
   FOREIGN KEY (`imgid`)  REFERENCES `images` (`id`)
 );
+
+CREATE TABLE `likes` (
+  `username` VARCHAR NOT NULL,
+  `postid`   BIGINT UNSIGNED NOT NULL,
+
+  PRIMARY KEY (`username`, `postid`),
+  FOREIGN KEY (`username`) REFERENCES `users` (`username`),
+  FOREIGN KEY (`postid`)   REFERENCES `posts` (`id`)
+);
+
+CREATE TABLE `comments` (
+  `id`       BIGINT UNSIGNED PRIMARY KEY DEFAULT UUID_SHORT(),
+  `created`  DATETIME NOT NULL,
+  `postid`   BIGINT UNSIGNED NOT NULL,
+  `username` VARCHAR (64) NOT NULL,
+  `text`     TEXT NOT NULL,
+
+  FOREIGN KEY (`postid`)   REFERENCES `posts` (`id`),
+  FOREIGN KEY (`username`) REFERENCES `users` (`username`)
+);
+
+CREATE TABLE `manufacturers` (
+  `name`   VARCHAR (32) PRIMARY KEY,
+  `origin` VARCHAR (32)
+);
+
+CREATE TABLE `cars` (
+  `name`         VARCHAR (64) PRIMARY KEY,
+  `model_year`   INT,
+  `engine_size`  FLOAT,
+  `engine_type`  VARCHAR (32),
+  `drive_train`  VARCHAR (32),
+  `gear_box`     VARCHAR (32),
+  `type`         VARCHAR (32),
+  `manufacturer` VARCHAR (32),
+
+  FOREIGN KEY (`manufacturer`) REFERENCES `manufacturers` (`name`)
+);
+
+ALTER TABLE `posts`
+ADD FOREIGN KEY (`car`) REFERENCES `cars` (`name`);

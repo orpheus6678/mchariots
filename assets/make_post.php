@@ -9,6 +9,7 @@ if (is_null($_SESSION['username']))
 
 $username = $_SESSION['username'];
 $text = mysqli_real_escape_string($mysqli, $_POST['text']);
+$car = mysqli_real_escape_string($mysqli, $_POST['car']);
 
 for ($i = 0; $i < count($_FILES['images']['name']); $i++)
 {
@@ -25,7 +26,7 @@ $datetime = date("Y-m-d H:i:s");
 
 mysqli_multi_query($mysqli,
   'SET @id = UUID_SHORT();'
-  . "INSERT INTO `posts` VALUES (@id, '$text', '$datetime', '$username', NULL);"
+  . "INSERT INTO `posts` VALUES (@id, '$text', '$datetime', '$username', '$car');"
   . "SELECT @id AS `id`;"
 );
 

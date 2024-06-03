@@ -1,3 +1,41 @@
 body {
   margin-left: 1em;
+  background: linear-gradient(to right, white, #b0e3ff);
 }
+
+.image-post {
+  display: inline-block;
+  margin-block: .7em;
+}
+
+.posts {
+  width: 60vw;
+  height: 80vh;
+  overflow: auto;
+}
+
+.post {
+  display: flex;
+  margin-block: 1em 0;
+  background: #cee6f7;
+}
+
+.post-body {
+  border: solid 1px black;
+  padding: 1em;
+}
+
+.post-body > img { max-width: 100%; }
+.post-body > p { margin-block: 0 1em; }
+
+.comment-body {
+  min-width: 40%;
+  border: solid 1px black;
+  border-left: none;
+  padding: 1em;
+}
+
+.like-comment { margin-top: 1em; }
+.like-comment > div:first-child { margin-bottom: .5em; }
+.like-comment > form { display: inline; }
+.like-toggle { margin-right: .2em; }

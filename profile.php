@@ -11,6 +11,18 @@ require 'assets/db.php';
 require 'assets/util.php';
 
 $username = $_SESSION['username'];
+$orig_username = $username;
+
+if (isset($_GET['username']))
+{
+  $url_username = $_GET['username'];
+  $is_login_user = $username === $url_username;
+  $username = ($is_login_user)? $username : $url_username;
+} else {
+  header('Location: profile.php?username=' . urlencode($username));
+  die;
+}
+
 $row = mysqli_fetch_assoc(mysqli_execute_query(
   $mysqli,
   'SELECT `fullname`, `gender`, `joindate`, `path` AS `pfppath`
@@ -54,12 +66,11 @@ if (is_null($pfppath)) {
       .immovable-part {
         display: flex;
         flex-direction: column;
-        margin-right: 1em;
       }
 
       .profile-banner > img {
-        width: 200px;
-        height: 200px;
+        width: 150px;
+        height: 150px;
         object-fit: cover;
         margin-bottom: 1em;
       }
@@ -70,32 +81,9 @@ if (is_null($pfppath)) {
       .main { display: flex; }
       .make-post > * { display: block; }
       .make-post > button { padding: .5em; }
-
-      .image-post {
-        display: inline-block;
-        margin-block: .7em;
-      }
-
-      .posts {
-        height: 90vh;
-        overflow: auto;
-      }
-
-      .post {
-        width: 70%;
-        margin: 0 auto;
-        margin-block: 1em 0;
-        border: solid 1px black;
-        padding: 1em;
-      }
-
-      .post > img {
-        max-width: 50%;
-      }
-
-      .post > p {
-        margin-block: 0 1em;
-      }
+      .car-select { margin-top: 1em; }
+      .posts { height: 85vh; }
+      .posts > h1:first-child { margin-block: 0; }
     </style>
   </head>
   <body>
@@ -112,6 +100,7 @@ if (is_null($pfppath)) {
           <li>Joined in <?= idate('Y') ?></li>
         </ul>
       </div>
+      <?php if ($is_login_user): ?>
       <form class=pfp-submit action=assets/change_pfp.php method=post enctype=multipart/form-data>
         <label for=change-pfp>Change Profile Picture</label>
         <input type=file id=change-pfp name=pfp accept="image/*">
@@ -120,21 +109,38 @@ if (is_null($pfppath)) {
         <label for=post-text><h3>What's on your mind?</h3></label>
         <textarea name=text id=post-text rows=7 cols=40
           placeholder="Write something to post here..."></textarea>
+        <div class=car-select>
+          <label for=car>Select car</label>
+          <select name=car id=car>
+            <option value="">--Please choose an option--</option>
+          <?php
+            $result = mysqli_execute_query($mysqli, 'SELECT `name` FROM `cars`');
+            
+            foreach ($result as $row)
+              echo '<option value="' . $row['name'] . '">' . $row['name'] . '</option>';
+          ?>
+          </select>
+        </div>
         <div class=image-post>
           <label for=post-images>Optionally post images?</label>
           <input id=post-images type=file name=images[] accept="image/*" multiple>
         </div>
         <button>Post</button>
+        <?php endif; ?>
       </form>
       </div>
       <div class=posts>
+        <h1>Posts</h1>
         <?php
 
         $result = mysqli_execute_query(
           $mysqli,
-          'SELECT `id` FROM `posts` WHERE `username` = ?',
+          'SELECT `id` FROM `posts` WHERE `username` = ? ORDER BY `created` DESC',
           [$username]  
         );
+
+        if (!mysqli_num_rows($result))
+          echo '<p>Posts you make will appear here.</p>';
 
         foreach ($result as $row)
           show_post($row['id']);
